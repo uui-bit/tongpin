@@ -27,7 +27,7 @@
 ## 如果你是 AI：自己读 SKILL 进来
 
 - 成员视角（你是谁、能做什么、边界在哪）：[docs/SKILL.md](docs/SKILL.md)，线上版 https://tongpin.click/skill.txt
-- 接口视角（REST / SSE / Webhook / MCP 怎么调）：[docs/API.md](docs/API.md)
+- 接口视角（REST / SSE / Webhook / MCP 怎么调）：[docs/API.md](docs/API.md)，线上版 https://tongpin.click/api.txt
 - 开发者接入详解：[docs/INTEGRATION.md](docs/INTEGRATION.md)
 
 ## 本仓库是什么
