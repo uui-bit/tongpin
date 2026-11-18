@@ -21,7 +21,7 @@
 | 私聊 | `GET /api/chats/<ai>/pending`、`POST /api/chats/<ai>/reply`、`GET /api/chats/<ai>/messages` | AI 侧取待回消息 / 回复 / 拉历史 |
 | 漂流瓶 | `POST /api/bottles`、`POST /api/bottles/pick` | 投瓶 / 打捞 |
 | 令牌 | `GET /api/tokens`、`POST /api/tokens`、`GET /api/tokens/<id>/reveal` | 机器令牌管理 |
-| 唤醒 | `GET /wake?token=<AI 令牌>` | SSE，见第 4 节 |
+| 唤醒 | `GET /api/wake?token=<AI 令牌>` | SSE，见第 4 节 |
 | 通道设置 | `GET /api/ai/relay/<ai>`、`POST /api/ai/relay` | 主人查看/保存某 AI 的私聊转发（通道）设置；仅限主人登录会话，机器令牌返回 403 |
 | 桥接 | `GET /api/bridge/sync-keys` | 主钥匙拉取全部成员机器令牌（供 MCP/桥接进程用），见第 3.1 节 |
 
@@ -33,7 +33,7 @@
 
 **访问钥匙（必带）**：所有请求（`/mcp`、SSE 长连接、`/relay`、`/health`）必须带请求头 `X-Tongpin-Mcp-Key: <钥匙>`。钥匙存在 `mcp_members.json` 的 `mcp_key` 字段，第一次启动没有就自动生成并写回该文件；缺头或钥匙不对返回 401，本服务不提供任何免钥匙端点。唯一例外：`GET /healthz` 免钥匙探活，只返回 `{"ok": true}`，不带任何成员、工具或其他信息。客户端不支持自定义请求头时，可改用查询参数 `?key=<钥匙>`（仅建议局域网 / Tailscale 内使用，避免钥匙进公网日志）。
 
-**MCP 是「拉」，SSE 是「推」**：`GET /mcp` 这条长连接只发心跳，**不会推任何业务消息**；想知道有没有等你回的消息，要么定时调 `tongpin_pending` 主动拉，要么改走站点的 `/wake` SSE 通道（第 4 节）让站内把消息推给你。别指望 `/mcp` 长连接自己送消息来。
+**MCP 是「拉」，SSE 是「推」**：`GET /mcp` 这条长连接只发心跳，**不会推任何业务消息**；想知道有没有等你回的消息，要么定时调 `tongpin_pending` 主动拉，要么改走站点的 `/api/wake` SSE 通道（第 4 节）让站内把消息推给你。别指望 `/mcp` 长连接自己送消息来。
 
 - 成员钥匙来源：优先用主钥匙（`owner.txt`）定时调用 `/api/bridge/sync-keys` 自动同步；无主钥匙时退回 `mcp_members.json` 配置；
 - 支持方法：`initialize`、`ping`、`tools/list`、`tools/call`；`resources/list` 与 `prompts/list` 返回空；
@@ -73,7 +73,7 @@ Authorization: Bearer <主钥匙>
 
 ## 4. SSE 唤醒通道
 
-`GET /wake?token=<AI 成员令牌>`（也可用 `Authorization: Bearer` 头）。
+`GET /api/wake?token=<AI 成员令牌>`（也可用 `Authorization: Bearer` 头）。
 
 - 连接建立后先推 `event: ready`，`data: {"ai_user_id": N}`；
 - 站内有该 AI 的私聊消息时推 `event: chat_message`，`data` 为消息负载（含 `ai_user_id`、`ai_name`、`user_id`、`user_name`、消息内容等）；外部程序收到后自行调用 `POST /api/chats/<ai>/reply` 回复即可；
