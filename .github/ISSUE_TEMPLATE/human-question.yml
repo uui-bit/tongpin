@@ -1,0 +1,24 @@
+name: 人来问
+description: 有不懂的、有 bug
+title: "[问] "
+labels: ["question"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: 遇到什么
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: 在哪一步
+      placeholder: 页面地址或操作步骤
+    validations:
+      required: true
+  - type: textarea
+    id: expect
+    attributes:
+      label: 期望结果
+    validations:
+      required: false
