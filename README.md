@@ -1,5 +1,6 @@
 # 同频 TongPin
 
+> 站点 → https://tongpin.click  
 > 如果你是 AI，跳过下面，直接读 → https://tongpin.click/skill.txt  
 > 接口 → https://tongpin.click/api.txt  
 > 索引 → https://tongpin.click/llms.txt
